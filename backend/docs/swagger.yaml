@@ -1,44 +1,17 @@
 openapi: 3.0.0
 info:
-  description: Backend routes for CSElectives2.0
-  version: 1.0.0-oas3
+  description: Backend routes for CSElectives 2.0
+  version: 1.1.0
   title: CSElectives API Routes
   contact:
     email: joel.huang@csesoc.org.au
-  license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
-# tags:
-#   - name: admins
-#     description: Secured Admin-only calls
-#   - name: developers
-#     description: Operations available to regular developers
 
 paths:
-  /user:
-    post:
-      summary: Onboards a user
-      requestBody:
-        required: true
-        content:
-          application/json:  
-            schema:
-              type: object
-              properties:
-                zid:
-                  type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/User'
   /user/${zid}:
     get:
-      summary: Login for the user
+      tags:
+        - "User"
+      summary: Retrieve user profile
       parameters:
         - in: path
           name: zid   # Note the name is the same as in the path
@@ -58,61 +31,11 @@ paths:
                   $ref: '#/components/schemas/User'
         '404':
           description: No user found
-    put:
-      summary: Changes users admin privleges
-      parameters:
-        - in: path
-          name: zid   # Note the name is the same as in the path
-          required: true
-          schema:
-            type: string
-            minimum: 1
-          description: The user ID
-      requestBody:
-        content: 
-          application/json:
-            schema:
-              type: object
-              properties:
-                is_admin:
-                  type: boolean
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                items:
-                  $ref: '#/components/schemas/User'
   /courses:
     get:
+      tags:
+        - "Courses"
       summary: Gets a list of all course objects
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Course'
-  /courses/${course_id}:
-    put:
-      summary: Puts a course with new course_id into database
-      parameters:
-        - in: path
-          name: course_id  
-          required: true
-          schema:
-            type: string
-            minimum: 1
-          description: The course code
-      requestBody:
-        content: 
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Course'
       responses:
         '200':
           description: OK
@@ -124,6 +47,8 @@ paths:
                   $ref: '#/components/schemas/Course'
   /courses/bookmark:
     post:
+      tags:
+        - "Courses"
       summary: Bookmarks a specific course for a specific user
       requestBody:
         content: 
@@ -131,8 +56,8 @@ paths:
             schema:
               type: object
               properties:
-                course_code:
-                  $ref: '#/components/schemas/Course/properties/course_code'
+                courseCode:
+                  $ref: '#/components/schemas/Course/properties/courseCode'
                 zid:
                   $ref: '#/components/schemas/User/properties/zid'
                 bookmark:
@@ -148,6 +73,8 @@ paths:
                   $ref: '#/components/schemas/Course'
   /reviews:
     post:
+      tags:
+        - "Reviews"
       summary: Creates a review
       requestBody:
         content: 
@@ -155,14 +82,14 @@ paths:
             schema:
               type: object
               properties:
-                author_id: 
+                authorId: 
                   $ref: "#/components/schemas/User/properties/zid"
-                author_name:
+                authorName:
                   type: string
                 description:
                   type: string
-                course_code:
-                  $ref: "#/components/schemas/Course/properties/course_code"
+                courseCode:
+                  $ref: "#/components/schemas/Course/properties/courseCode"
                 rating:
                   $ref: "#/components/schemas/Rating/properties/overall"
                 termTaken:
@@ -177,6 +104,8 @@ paths:
                 items:
                   $ref: '#/components/schemas/Review'
     get:
+      tags:
+        - "Reviews"
       summary: Gets a list of reviews
       responses:
         '200':
@@ -187,12 +116,14 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Review'
-  /reviews/${review_id}:
+  /reviews/${reviewId}:
     put:
-      summary: Edits a specific review with review_id
+      tags:
+        - "Reviews"
+      summary: Edits a specific review with reviewId
       parameters:
         - in: path
-          name: review_id   # Note the name is the same as in the path
+          name: reviewId   # Note the name is the same as in the path
           required: true
           schema:
             type: string
@@ -204,14 +135,14 @@ paths:
             schema:
               type: object
               properties:
-                author_id: 
+                authorId: 
                   $ref: "#/components/schemas/User/properties/zid"
-                author_name:
+                authorName:
                   type: string
                 description:
                   type: string
-                course_code:
-                  $ref: "#/components/schemas/Course/properties/course_code"
+                courseCode:
+                  $ref: "#/components/schemas/Course/properties/courseCode"
                 rating:
                   $ref: "#/components/schemas/Rating/properties/overall"
                 termTaken:
@@ -220,10 +151,12 @@ paths:
         '200':
           description: OK
     delete:
-      summary: Deletes a review with review_id
+      tags:
+        - "Reviews"
+      summary: Deletes a review with reviewId
       parameters:
         - in: path
-          name: review_id   # Note the name is the same as in the path
+          name: reviewId   # Note the name is the same as in the path
           required: true
           schema:
             type: string
@@ -232,12 +165,14 @@ paths:
       responses:
         '200':
           description: OK
-  /upvote/${review_id}:
+  /upvote/${reviewId}:
     post:
-      summary: Lets a user upvote a review with review_id
+      tags:
+        - "Reviews"
+      summary: Lets a user upvote a review with reviewId
       parameters:
         - in: path
-          name: review_id   # Note the name is the same as in the path
+          name: reviewId   # Note the name is the same as in the path
           required: true
           schema:
             type: string
@@ -256,6 +191,8 @@ paths:
           description: OK
   /reviews/bookmark:
     post:
+      tags:
+        - "Reviews"
       summary: Bookmarks a specific review for a user
       requestBody:
         content: 
@@ -263,8 +200,8 @@ paths:
             schema:
               type: object
               properties:  
-                review_id:
-                  $ref: '#/components/schemas/Review/properties/review_id'
+                reviewId:
+                  $ref: '#/components/schemas/Review/properties/reviewId'
                 zid:
                   $ref: '#/components/schemas/User/properties/zid'
                 bookmark:
@@ -280,6 +217,8 @@ paths:
                   $ref: '#/components/schemas/Review'
   /reports:
     post:
+      tags:
+        - "Reports"
       summary: Lets a user report a specific review
       requestBody:
         content: 
@@ -287,8 +226,8 @@ paths:
             schema:
               type: object
               properties:  
-                review_id:
-                  $ref: '#/components/schemas/Review/properties/review_id'
+                reviewId:
+                  $ref: '#/components/schemas/Review/properties/reviewId'
                 zid:
                   $ref: '#/components/schemas/User/properties/zid'
                 reason:
@@ -303,6 +242,8 @@ paths:
                 items:
                   $ref: '#/components/schemas/Report'
     put:
+      tags:
+        - "Reports"
       summary: Changes the status of a specific report
       requestBody:
         content: 
@@ -310,8 +251,8 @@ paths:
             schema:
               type: object
               properties:  
-                report_id:
-                  $ref: '#/components/schemas/Report/properties/report_id'
+                reportId:
+                  $ref: '#/components/schemas/Report/properties/reportId'
                 status:
                   $ref: '#/components/schemas/Report/properties/status'
       responses:
@@ -323,12 +264,14 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Report'
-  /${course_code}/reviews:
+  /reviews/${courseCode}:
     get:
+      tags:
+        - "Reviews"
       summary: Gets a list of reviews associated with course code
       parameters:
         - in: path
-          name: course_code   # Note the name is the same as in the path
+          name: courseCode   # Note the name is the same as in the path
           required: true
           schema:
             type: string
@@ -355,36 +298,36 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Review"
-        bookmarked_reviews:
+        bookmarkedReviews:
           type: array
           items:
             $ref: "#/components/schemas/Review"
-        bookmarked_courses:
+        bookmarkedCourses:
           type: array
           items:
             $ref: "#/components/schemas/Course"
-        is_admin:
+        isAdmin:
           type: boolean
     Review:
       type: object
       properties:
-        review_id:
+        reviewId:
           type: string
-        author_id: 
+        authorId: 
           $ref: "#/components/schemas/User/properties/zid"
-        author_name:
+        authorName:
           type: string
         description:
           type: string
-        course_code:
-          $ref: "#/components/schemas/Course/properties/course_code"
+        courseCode:
+          $ref: "#/components/schemas/Course/properties/courseCode"
         rating:
           $ref: "#/components/schemas/Rating/properties/overall"
         termTaken:
           type: string
-        created_timestamp:
+        createdTimestamp:
           type: integer
-        updated_timestamp:
+        updatedTimestamp:
           type: integer
         upvotes:
           type: array
@@ -395,7 +338,7 @@ components:
     Course:
       type: object
       properties:
-        course_code:
+        courseCode:
           type: string
         archived:
           type: boolean
@@ -407,7 +350,7 @@ components:
           type: string
         description:
           type: string
-        enrolment_rules:
+        enrolmentRules:
           type: string
         equivalents:
           type: string
@@ -415,12 +358,12 @@ components:
           type: string
         facaulty:
           type: string
-        field_of_education:
+        fieldOfEducation:
           type: string
-        gen_ed:
+        genEd:
           type: boolean
         reviews:
-          $ref: "#/components/schemas/Review/properties/review_id"
+          $ref: "#/components/schemas/Review/properties/reviewId"
         manageability: 
           type: integer
         usefulness:
@@ -432,10 +375,10 @@ components:
     Report:
       type: object
       properties:
-        report_id:
+        reportId:
           type: string
-        review_id:
-          $ref: "#/components/schemas/Review/properties/review_id"
+        reviewId:
+          $ref: "#/components/schemas/Review/properties/reviewId"
         reason:
           type: string
         zid:
