@@ -33,7 +33,7 @@
     "@typescript-eslint/parser": "5.30.6",
     "@vitejs/plugin-react": "2.0.0",
     "@testing-library/react": "13.3.0",
-    "@testing-library/user-event": "14.2.3",
+    "@testing-library/user-event": "14.3.0",
     "eslint-config-airbnb-typescript": "17.0.0",
     "eslint-config-prettier": "8.5.0",
     "jsdom": "^20.0.0",
