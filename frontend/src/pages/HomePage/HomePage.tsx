@@ -12,10 +12,11 @@ import { Button,
          ButtonFlexbox,
          HomeHeader,
          Logo,
-         SmallContainer
+         SmallContainer,
+         LoginButton
 } from "./style";
-import reviewSrc from 'src/assets/graphics/review.svg';
-import alluraSrc from 'src/assets/graphics/allura.svg';
+import alluraSrc1 from 'src/assets/graphics/allura1.svg';
+import alluraSrc3 from 'src/assets/graphics/allura3.svg';
 import { UniLectives } from "src/components/image/imageIndex";
 import ReviewModal from "../../components/ReviewModal/ReviewModal";
 import { useAppDispatch, useAppSelector } from "src/logic/redux/hooks";
@@ -40,7 +41,7 @@ const HomePage = () => {
   }, [])
 
   const [landingGraphic, setLandingGraphic] = useState<string>();
-  const graphics = [reviewSrc, alluraSrc];
+  const graphics = [alluraSrc1, alluraSrc3];
   const randomNumber = Math.floor(Math.random() * graphics.length);
 
   useEffect(() => {
@@ -51,9 +52,12 @@ const HomePage = () => {
     <Content>
       <HomeHeader>
         <Logo src={UniLectives} />
+        <LoginButton justify={'flex-end'} onClick={() => setLoginDialog(true)}>
+          Login
+        </LoginButton>
       </HomeHeader>
       <Flexbox>
-        <FlexboxComponent padding="10em">
+        <FlexboxComponent width={'40%'} padding="10em">
           <TextFlexbox>
             <HomeText fontFamily={'Lato'} fontWeight={'bold'} fontSize="15px">
               CSEsoc Presents
@@ -81,14 +85,13 @@ const HomePage = () => {
             </ButtonFlexbox>
           </TextFlexbox>
         </FlexboxComponent>
-        <FlexboxComponent>
+        <FlexboxComponent width={'60%'}>
           <Graphic src={landingGraphic}/>
         </FlexboxComponent>
       </Flexbox>
       <Container>
         <SmallContainer>
           Hello1
-          <Button onClick={() => setLoginDialog(true)}>Login</Button>
           {loginDialog && <LoginDialog close={() => setLoginDialog(false)} />}
           <Text>User response:</Text>
           <Text>{JSON.stringify(user)}</Text>

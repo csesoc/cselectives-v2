@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import landingCurve from "src/assets/curves/landingCurve.svg";
+import landingCurve from "src/assets/curves/fullScreen.svg";
 
 export const Content = styled.div`
   width: 100vw;
@@ -28,10 +28,29 @@ export const HomeHeader = styled.div`
   flex-direction: row;
   width: 100%;
   padding-bottom: 10vh;
+  justify-content: flex-end;
+  justify-content: space-between;
 `;
 
 export const Logo = styled.img`
   margin-left: 5rem;
+  margin-top: 1rem;
+`;
+
+export const LoginButton = styled.button<ButtonProps>`
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 550;
+  padding: 10x 10px;
+  background: none;
+  border:  2px solid white;
+  color:  #FFF;
+  &:hover {
+    opacity: 0.9;
+    transform: scale(0.98);
+  }
+  margin-right: 5rem;
   margin-top: 1rem;
 `;
 
@@ -59,7 +78,7 @@ export const FlexboxComponent = styled.div<FlexboxProps>`
   align-items: center;
   padding-left: ${props => props.padding};
   padding-top: ${props => props.padding};
-  width: 50%;
+  width: ${props => props.width};
 `;
 
 /** Landing Page CSS for Text  */
@@ -96,6 +115,7 @@ export const ButtonFlexbox = styled.div`
 interface ButtonProps {
   bg ?: string;
   color ?: string;
+  justify ?: string;
 }
 
 export const Button = styled.button<ButtonProps>`
@@ -112,4 +132,5 @@ export const Button = styled.button<ButtonProps>`
     opacity: 0.9;
     transform: scale(0.98);
   }
+  float: right;
 `;
