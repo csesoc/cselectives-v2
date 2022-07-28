@@ -8,7 +8,9 @@ export interface IConfig {
 
 export interface IDatabaseConfig {
   type: "postgres";
-  host: string;
   port: number;
-  schema: string;
+  host: string;
+  username: string;
+  password: string;
+  database: string;
 }

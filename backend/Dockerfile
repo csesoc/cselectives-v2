@@ -1,5 +1,5 @@
 # Grab the latest Node base image
-FROM node:17.8.0-alpine as builder
+FROM node:16.15-alpine as builder
 
 # Set the current working directory inside the container
 WORKDIR /app
@@ -12,7 +12,7 @@ COPY . .
 RUN npm run build:container
 
 # Grab the latest Node base image
-FROM node:17.8.0-alpine as runner
+FROM node:16.15-alpine as runner
 
 # Set the current working directory inside the container
 WORKDIR /app

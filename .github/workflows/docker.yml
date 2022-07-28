@@ -2,15 +2,19 @@ name: Docker
 on:
   push:
     branches:
-      - "main"
+      - "develop"
 
 jobs:
-  build-backend:
-    name: "Build (Backend)"
+  build:
+    name: "Build (${{ matrix.component }})"
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
+    strategy:
+      fail-fast: true
+      matrix:
+        component: [backend, frontend, database]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -29,11 +33,42 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v3
         with:
-          context: backend
+          context: ${{ matrix.component }}
           push: ${{ github.event_name != 'pull_request' }}
           platforms: linux/amd64
-          file: backend/Dockerfile
+          file: ${{ matrix.component }}/Dockerfile
           tags: |
-            ghcr.io/csesoc/cselectives-backend:${{ github.sha }}
-            ghcr.io/csesoc/cselectives-backend:latest
+            ghcr.io/csesoc/cselectives-${{ matrix.component }}:${{ github.sha }}
+            ghcr.io/csesoc/cselectives-${{ matrix.component }}:latest
           labels: ${{ steps.meta.outputs.labels }}
+  deploy:
+    name: Deploy (CD)
+    runs-on: ubuntu-latest
+    needs: [build]
+    concurrency: staging
+    environment:
+      name: staging
+      url: https://cselectives.staging.csesoc.unsw.edu.au
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          repository: csesoc/deployment
+          token: ${{ secrets.GH_TOKEN }}
+      - name: Install yq - portable yaml processor
+        uses: mikefarah/yq@v4.25.1
+      - name: Update deployment
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          git config user.name "CSESoc CD"
+          git config user.email "technical@csesoc.org.au"
+          git checkout -b update/cselectives/${{ github.sha }}
+          yq -i '.items[0].spec.template.spec.containers[0].image = "ghcr.io/csesoc/cselectives-backend:${{ github.sha }}"' apps/projects/cselectives/v2/staging/deploy-backend.yml
+          yq -i '.items[0].spec.template.spec.initContainers[0].image = "ghcr.io/csesoc/cselectives-database:${{ github.sha }}"' apps/projects/cselectives/v2/staging/deploy-backend.yml
+          yq -i '.items[0].spec.template.spec.containers[0].image = "ghcr.io/csesoc/cselectives-frontend:${{ github.sha }}"' apps/projects/cselectives/v2/staging/deploy-frontend.yml
+          git add . 
+          git commit -m "feat(cselectives/staging): update image" 
+          git push -u origin update/cselectives/${{ github.sha }}
+          gh pr create --title "feat(cselectives/staging): update image" --body "Updates the image for the cselectives v2 (staging) deployment to commit csesoc/cselectives-v2@${{ github.sha }}." > URL
+          gh pr merge $(cat URL) --squash -d

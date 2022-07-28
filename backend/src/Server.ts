@@ -1,14 +1,16 @@
 import App from "./App";
 import Signals = NodeJS.Signals;
 import { formatError, getLogger } from "./utils/Logger";
+import { envVars } from "./utils/Constants";
+import { checkEnv } from "./utils/Helpers";
 
 export default class Server {
   private logger = getLogger();
   private app: App;
 
   constructor() {
+    process.env.NODE_ENV === "production" && checkEnv(envVars);
     this.app = new App();
-    // TODO: Add any environment variable checks here
   }
 
   stop = async (): Promise<void> => {

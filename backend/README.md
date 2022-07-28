@@ -8,7 +8,7 @@ Build and run locally:
 
 ```
 # Start in development mode:
-npm run dev
+POSTGRESQL_HOST=localhost POSTGRESQL_USER=postgres POSTGRESQL_PASSWORD=mysecretpassword POSTGRESQL_DATABASE=mydb JWT_SECRET=tom npm run dev
 ```
 
 ## Build & Deploy

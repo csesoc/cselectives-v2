@@ -22,7 +22,14 @@ export class ExpressWrapper {
     const app = express()
       .use(cors())
       .use(express.urlencoded({ extended: true }))
-      .use(bodyParser.json());
+      .use(bodyParser.json())
+      .get("/", (req: Request, res: Response) => {
+        this.logger.info("health check");
+        res.status(200).json({
+          code: 200,
+          message: "health check success",
+        });
+      });
 
     this.logger.info("Setup Express");
     return app;

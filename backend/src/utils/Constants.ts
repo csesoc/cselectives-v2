@@ -1,6 +1,14 @@
 import { IHttpError } from "../interfaces/IApiResponses";
 import { HTTPError } from "./Errors";
 
+export const envVars: string[] = [
+  "POSTGRESQL_HOST",
+  "POSTGRESQL_USER",
+  "POSTGRESQL_PASSWORD",
+  "POSTGRESQL_DATABASE",
+  "JWT_SECRET",
+];
+
 export const unauthorizedError: IHttpError = {
   errorCode: 401,
   errorMessage: "Unauthorized error occured",
